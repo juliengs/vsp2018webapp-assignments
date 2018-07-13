@@ -1,4 +1,3 @@
-"use strict";
 const PhotoGalleryLib = {
     /**
      * Add a listener for size class changes.
@@ -10,23 +9,24 @@ const PhotoGalleryLib = {
      * a particular size class like large.
      * @param callback Function that receives the size class as parameter
      */
-    onSizeClassChange: (callback) => {
+    onSizeClassChange: (callback: (size: "small" | "medium" | "large") => void): void => {
         if (typeof callback !== 'function') {
             throw new TypeError('Callback parameter has to be called and of type function.');
         }
-        const getViewportSizeName = (width) => {
+
+        const getViewportSizeName = (width: number): "small" | "medium" | "large" => {
             if (width <= 600) {
                 return 'small';
-            }
-            else if (width <= 800) {
+            } else if (width <= 800) {
                 return 'medium';
-            }
-            else {
+            } else {
                 return 'large';
             }
-        };
+        }
+
         let currentViewportSize = getViewportSizeName(window.innerWidth);
         callback(currentViewportSize);
+
         window.onresize = () => {
             const newViewportSize = getViewportSizeName(window.innerWidth);
             if (newViewportSize != currentViewportSize) {
@@ -35,6 +35,7 @@ const PhotoGalleryLib = {
             }
         };
     },
+
     /**
      * Generate a grid of images with the urls as srcs.
      * A 1x8 grid is made for small screen sizes, a 2x4 grid is made for medium screen sizes, and a 4x2 grid is made for
@@ -43,10 +44,11 @@ const PhotoGalleryLib = {
      * @param size Size of the grid
      * @returns The generated grid table
      */
-    generateGrid: (imageUrls, size) => {
+    generateGrid: (imageUrls: string[], size: "small" | "medium" | "large"): HTMLTableElement => {
         if (imageUrls.length !== 8) {
             throw new RangeError('The list of image urls has to contain exactly 8 elements.');
         }
+
         const VIEWPORT_LARGE_TABLE = `
             <tr>
                 <td><img></td>
@@ -61,6 +63,7 @@ const PhotoGalleryLib = {
                 <td><img></td>
             </tr>
         `;
+
         const VIEWPORT_MEDIUM_TABLE = `
             <tr>
                 <td><img></td>
@@ -79,6 +82,7 @@ const PhotoGalleryLib = {
                 <td><img></td>
             </tr>
         `;
+
         const VIEWPORT_SMALL_TABLE = `
             <tr>
                 <td><img></td>
@@ -105,15 +109,14 @@ const PhotoGalleryLib = {
                 <td><img></td>
             </tr>
         `;
+
         const imagesGrid = document.createElement('table');
         imagesGrid.id = 'imagesGrid';
         if (size == 'large') {
             imagesGrid.innerHTML = VIEWPORT_LARGE_TABLE;
-        }
-        else if (size == 'medium') {
+        } else if (size == 'medium') {
             imagesGrid.innerHTML = VIEWPORT_MEDIUM_TABLE;
-        }
-        else {
+        } else {
             imagesGrid.innerHTML = VIEWPORT_SMALL_TABLE;
         }
         imagesGrid.querySelectorAll('img').forEach((imageTag, i) => {
@@ -121,18 +124,21 @@ const PhotoGalleryLib = {
         });
         return imagesGrid;
     },
+
     /**
      * Creates the presentation modal, and adds it to the body.
      */
-    createModal: () => {
+    createModal: (): void => {
         const modal = document.createElement('div');
         modal.id = 'presentationModal';
+
         modal.innerHTML = `
             <img id="modalImage" />
             <button id="closeButton">X</button>
             <button id="previousButton">Previous</button>
             <button id="nextButton">Next</button>
         `;
+
         Object.assign(modal.style, {
             position: 'fixed',
             top: '0',
@@ -142,7 +148,8 @@ const PhotoGalleryLib = {
             backgroundColor: 'grey',
             display: 'none',
         });
-        Object.assign(modal.querySelector('#modalImage').style, {
+
+        Object.assign((modal.querySelector('#modalImage') as HTMLDivElement).style, {
             position: 'absolute',
             top: '50%',
             left: '50%',
@@ -150,7 +157,8 @@ const PhotoGalleryLib = {
             maxHeight: '100%',
             maxWidth: '100%',
         });
-        Object.assign(modal.querySelector('#closeButton').style, {
+
+        Object.assign((modal.querySelector('#closeButton') as HTMLButtonElement).style, {
             position: 'fixed',
             top: '0',
             right: '0',
@@ -159,55 +167,63 @@ const PhotoGalleryLib = {
             width: '40',
             backgroundColor: 'white',
         });
-        Object.assign(modal.querySelector('#previousButton').style, {
+
+        Object.assign((modal.querySelector('#previousButton') as HTMLButtonElement).style, {
             position: 'fixed',
             left: '0',
             bottom: '0',
             height: '40',
         });
-        Object.assign(modal.querySelector('#nextButton').style, {
+
+        Object.assign((modal.querySelector('#nextButton') as HTMLButtonElement).style, {
             position: 'fixed',
             right: '0',
             bottom: '0',
             height: '40',
         });
-        document.querySelector('body').appendChild(modal);
+
+        (document.querySelector('body') as HTMLBodyElement).appendChild(modal);
     },
+
     /**
      * Register click handlers for the close, previous, and next buttons in the modal.
      * @param closeBtnCb Function to be called on button click
      * @param previousBtnCb Function to be called on button click
      * @param nextBtnCb Function to be called on button click
      */
-    initModal: (closeBtnCb, previousBtnCb, nextBtnCb) => {
-        document.querySelector('#closeButton').addEventListener('click', closeBtnCb);
-        document.querySelector('#previousButton').addEventListener('click', previousBtnCb);
-        document.querySelector('#nextButton').addEventListener('click', nextBtnCb);
+    initModal: (closeBtnCb: (event: MouseEvent) => void, previousBtnCb: (event: MouseEvent) => void, nextBtnCb: (event: MouseEvent) => void): void => {
+        (document.querySelector('#closeButton') as HTMLButtonElement).addEventListener('click', closeBtnCb);
+        (document.querySelector('#previousButton') as HTMLButtonElement).addEventListener('click', previousBtnCb);
+        (document.querySelector('#nextButton') as HTMLButtonElement).addEventListener('click', nextBtnCb);
     },
+
     /**
      * Closes the modal (hides it).
      */
-    closePresentationModal: () => {
-        document.querySelector('#presentationModal').style.display = 'none';
+    closePresentationModal: (): void => {
+        (document.querySelector('#presentationModal') as HTMLDivElement).style.display = 'none';
     },
+
     /**
      * Opens the modal (makes it visible).
      */
-    openPresentationModal: () => {
-        document.querySelector('#presentationModal').style.display = 'block';
+    openPresentationModal: (): void => {
+        (document.querySelector('#presentationModal') as HTMLDivElement).style.display = 'block';
     },
+
     /**
      * Sets the src attribute of the image in the presentation modal to the given image URL.
      * @param src Url for the image src
      */
-    setModalImgSrc: (src) => {
-        document.querySelector('#modalImage').src = src;
+    setModalImgSrc: (src: string): void => {
+        (document.querySelector('#modalImage') as HTMLImageElement).src = src;
     },
+
     /**
      * Register click handlers for close, previous, and next buttons in the modal.
      * @param callback Function that receives the image index as parameter
      */
-    addImageClickHandlers: (callback) => {
+    addImageClickHandlers: (callback: (index: number) => void): void => {
         document.querySelectorAll('#imagesGrid img').forEach((image, i) => {
             const index = i;
             image.addEventListener('click', () => {

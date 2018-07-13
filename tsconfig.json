@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "declaration": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "declarationDir": "solution",
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "PhotoGalleryLib.ts"
+    ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "vsp2018webapp-assignments",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "eslint": "5.1.x",
+    "typescript": "2.9.x"
+  }
+}

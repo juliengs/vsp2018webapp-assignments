@@ -1,0 +1,19 @@
+{
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 9
+    },
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "globals": {
+        "PhotoGalleryLib": true
+    },
+    "rules": {
+        "comma-dangle":["warn", "only-multiline"],
+        "prefer-const":"warn",
+        "quotes": ["warn", "single"],
+        "semi": "warn"
+    }
+}
